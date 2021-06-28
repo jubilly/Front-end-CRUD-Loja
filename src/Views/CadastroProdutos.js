@@ -40,10 +40,11 @@ export default class CadastroProdutos extends Component {
         }).then((json) => {
             this.setState({arrayProdutos: json})
             this.setState({ redirect: true });
-            alert("Produtos Cadastrado com Sucesso!")
+            alert("Produto Cadastrado com Sucesso!")
         }).catch(error => console.log(error));
-        this.setState({ nome: "", valor:"", fabricante:"", descricao:"", vencimento:"",cod_barras:"", tipopessoa:"", tipoproduto:"" }); 
-        
+        this.setState({ nome: "", valor:"", fabricante:"", 
+        descricao:"", vencimento:"",cod_barras:"", 
+        tipoproduto:"" });  
     }
 
     getNome = (event) => {

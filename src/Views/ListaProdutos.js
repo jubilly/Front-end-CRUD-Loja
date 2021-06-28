@@ -36,7 +36,6 @@ export default class ListaProdutos extends Component {
         }).then((responseData)=>{
             return responseData.json();
         }).then((data) => {
-            console.log(data)
             this.setState({arrayProdutos: data})
             let arrayNome = this.state.nome,
                 arrayCod_barras = this.state.cod_barras,
@@ -44,9 +43,9 @@ export default class ListaProdutos extends Component {
                 arrayDescricao  = this.state.descricao,
                 arrayVencimento  = this.state.vencimento,
                 arrayFabricante = this.state.fabricante,
-                arrayTipoproduto = this.state.tipoproduto;
-            let arrayDataToggle = this.state.toggleClass;
-            let arrayData = this.state.arrayProdutos;
+                arrayTipoproduto = this.state.tipoproduto,
+                arrayDataToggle = this.state.toggleClass,
+                arrayData = this.state.arrayProdutos;
             arrayData.map(nomes=>{
                 arrayNome.push([nomes.Nome])
                 arrayCod_barras.push([nomes.Cod_Barras])
@@ -58,10 +57,6 @@ export default class ListaProdutos extends Component {
                 arrayDataToggle.push(false)
             })
             this.setState({toggleClass: arrayDataToggle})
-            this.setState({nome:arrayNome})
-            console.log(this.state.toggleClass)
-
-            
         })
     }
     EditarFuncionario = (event, index) =>{
@@ -84,7 +79,6 @@ export default class ListaProdutos extends Component {
                 cod_barras: this.state.cod_barras[index],
                 valor : this.state.valor[index],
                 descricao : this.state.descricao[index],
-                cod_barras : this.state.cod_barras[index],
                 vencimento : this.state.vencimento[index],
                 fabricante: this.state.fabricante[index],
                 tipoproduto: this.state.tipoproduto[index]
@@ -95,7 +89,30 @@ export default class ListaProdutos extends Component {
             alert("Produto Atualizado com Sucesso!");
             this.setState({ redirect: true });
         }).catch(error => console.log(error));
-        this.setState({ nome: "", valor:"", fabricante:"", descricao:"", vencimento:"",cod_barras:"", tipopessoa:"", tipoproduto:"" }); 
+    }
+
+    Filter = (event) =>{
+        let datafilter = event.target.value;
+        this.setState({filterdata: datafilter})
+
+        fetch(`${baseURL}/buscaprodutos`,{
+            method: 'POST',
+            mode: 'cors',
+            headers:{
+                'Accept':'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                data: this.state.filterdata
+            })
+        }).then((responseData)=>{
+            this.setState({show: !this.state.show})
+            return responseData.json();
+        }).then((data) => {
+            console.log(data)
+            this.setState({arrayBuscaProduto: data})
+            
+        })
     }
     
     getNome = (event, index) => {
@@ -193,7 +210,13 @@ export default class ListaProdutos extends Component {
                         </div>
                     </div>
                 <button className="wrapper__btn wrapper__btn--edit" onClick={(event)=>{this.EditarFuncionario(event, index)}} value={this.state.toggleClass[index]}>Editar</button>
-                <button className={`wrapper__btn wrapper__btn--save ${this.state.toggleClass[index] === false ? 'wrapper__btn--no-show' : 'wrapper__btn--show'}`} onClick={(event)=>{this.SalvarProduto(event, index)}} value={item.Id}>Salvar</button>
+                <button 
+                    className={`wrapper__btn wrapper__btn--save 
+                    ${this.state.toggleClass[index] === false ? 
+                    'wrapper__btn--no-show' : 'wrapper__btn--show'}`} 
+                    onClick={(event)=>{this.SalvarProduto(event, index)}} value={item.Id}>
+                        Salvar
+                </button>
                  <hr></hr>
                 </>
             )
